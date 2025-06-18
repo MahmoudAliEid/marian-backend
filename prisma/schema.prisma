@@ -6,9 +6,9 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // Remove or comment out the output line
+  // output   = "../generated/prisma"
 }
-
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")

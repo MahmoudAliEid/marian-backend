@@ -5,13 +5,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// test server
-app.get('/test', (req, res) => {
-  res.json({ message: 'Test endpoint is working!' });
-}); 
-
+// Import user routes
+const userRoutes = require('./routers/user');
+// Use user routes
+app.use('/api', userRoutes);
+app.get('/', (req, res) => {
+  res.send('Welcome to the User Management API');
+});
 // connect to port
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

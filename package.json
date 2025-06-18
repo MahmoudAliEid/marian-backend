@@ -1,0 +1,23 @@
+{
+  "name": "marian-backend",
+  "version": "1.0.0",
+  "author": {
+    "name": "Soft Master Team",
+    "email": "mahmoud.ali.spider@gmail.com"
+  },
+  "description": "Backend server for Marian project",
+  "dependencies": {
+    "@prisma/client": "^6.10.0",
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  },
+  "devDependencies": {
+    "prisma": "^6.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "license": "ISC"
+}

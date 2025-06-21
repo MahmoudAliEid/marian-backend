@@ -9,8 +9,10 @@
   "dependencies": {
     "@prisma/client": "^6.10.0",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.7.0",
     "express": "^5.1.0",
     "mongodb": "^6.17.0",
+    "multer": "^2.0.1",
     "nodemon": "^3.1.10"
   },
   "devDependencies": {

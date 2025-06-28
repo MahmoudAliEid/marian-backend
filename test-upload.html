@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Product Upload</title>
+</head>
+<body>
+    <h2>Test Upload Endpoint</h2>
+    <form action="http://localhost:4000/api/test-upload" method="post" enctype="multipart/form-data">
+        <div>
+            <label>Name:</label>
+            <input type="text" name="name" value="Test Product" required>
+        </div>
+        <div>
+            <label>Description:</label>
+            <input type="text" name="description" value="Test Description" required>
+        </div>
+        <div>
+            <label>Images:</label>
+            <input type="file" name="images" multiple accept="image/*" required>
+        </div>
+        <button type="submit">Test Upload</button>
+    </form>
+    
+    <hr>
+    
+    <h2>Create Product</h2>
+    <form action="http://localhost:4000/api/create-product" method="post" enctype="multipart/form-data">
+        <div>
+            <label>Name:</label>
+            <input type="text" name="name" value="Real Product" required>
+        </div>
+        <div>
+            <label>Description:</label>
+            <input type="text" name="description" value="Real Description" required>
+        </div>
+        <div>
+            <label>User ID (optional - must be 24 hex characters):</label>
+            <input type="text" name="userId" placeholder="e.g. 507f1f77bcf86cd799439011 or leave empty">
+            <small>Leave empty if no user, or use a valid MongoDB ObjectId</small>
+        </div>
+        <div>
+            <label>Category ID (optional - must be 24 hex characters):</label>
+            <input type="text" name="categoryId" placeholder="e.g. 507f1f77bcf86cd799439012 or leave empty">
+            <small>Leave empty if no category, or use a valid MongoDB ObjectId</small>
+        </div>
+        <div>
+            <label>Images (Max 25MB per file, up to 10 files):</label>
+            <input type="file" name="images" multiple accept="image/*" required>
+            <small>Supported formats: JPG, PNG, JPEG. Maximum 25MB per file.</small>
+        </div>
+        <button type="submit">Create Product</button>
+    </form>
+</body>
+</html>

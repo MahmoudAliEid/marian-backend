@@ -28,11 +28,25 @@ model User {
 model Product {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
+  ar_name     String?
   description String?
+  ar_description String?
   images      String[]
   userId      String?   @db.ObjectId
   user        User?     @relation(fields: [userId], references: [id])
+  categoryId  String?   @db.ObjectId
+  category    Category? @relation("CategoryToProducts", fields: [categoryId], references: [id])
+  ar_category String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  en_name     String?
+  products    Product[] @relation("CategoryToProducts")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 

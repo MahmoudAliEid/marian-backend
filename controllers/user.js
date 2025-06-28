@@ -1,12 +1,16 @@
-const express = require('express');
-const { PrismaClient } = require("../generated/prisma");
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
-const router = express.Router();
+const jwt = require('jsonwebtoken')
 
 // Create a new user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
+  const token = jwt.sign({email},
+    process.env.JWT_SECRET || 'default '
+  )
+
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
@@ -16,8 +20,13 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid password" });
     }
-    res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({ message: "Login successful", user: {
+      name: user.name,
+      email: user.email,
+      token
+    } });
   } catch (error) {
+    console.log(error,'error logging in user');
     res.status(500).json({ error: "Error logging in user" });
   }
 };
@@ -31,10 +40,10 @@ const registerUser = async (req, res) => {
   try {
     const { email, password, name } = req.body;
     console.log("Email:", email);
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ error: "User already exists" });
-    }
+    // const existingUser = await prisma.user.findUnique({ where: { email } });
+    // if (existingUser) {
+    //   return res.status(400).json({ error: "User already exists" });
+    // }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: { email, password: hashedPassword, name },
@@ -48,6 +57,8 @@ const registerUser = async (req, res) => {
     res.status(500).json({ error: "Error registering user 🎶🎶🎶" });
   }
 };
+
+
 
 module.exports = {
   loginUser,

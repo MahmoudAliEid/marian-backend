@@ -1,4 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
+
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 
@@ -74,6 +75,10 @@ const deleteCategory=async(req,res)=>{
     }
 }
 
-module.exports={getCategoryById,createCategory,
-    getAllCategories,updateCategory,deleteCategory
+export {
+  getCategoryById,
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  deleteCategory
 };

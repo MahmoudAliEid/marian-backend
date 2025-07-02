@@ -1,10 +1,11 @@
-const express = require('express');
-const upload = require('../lib/upload');
+import express from 'express';
+import upload from '../lib/upload.js';
+import { getProductById, getAllProducts, getAllProductsAndUpdateAllOfThem, createProduct, updateProduct, deleteProduct } from '../controllers/product.js';
+
 const router = express.Router();
 
-const { getProductById, getAllProducts, createProduct, updateProduct, deleteProduct } = require('../controllers/product');
-
 router.get('/all-products', getAllProducts);
+router.get('/getAllProductsAndUpdateAllOfThem', getAllProductsAndUpdateAllOfThem);
 router.get('/product/:id', getProductById);
 router.post('/create-product', upload, createProduct);
 router.put('/update-product/:id', upload, updateProduct);
@@ -24,18 +25,15 @@ router.post('/test-upload', (req, res, next) => {
     console.log("Test upload endpoint hit");
     console.log("Request body:", req.body);
     console.log("Files:", req.files);
-    
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'No files uploaded' });
     }
-    
     const fileInfo = req.files.map(file => ({
       originalname: file.originalname,
       mimetype: file.mimetype,
       size: file.size,
       path: file.path
     }));
-    
     res.status(200).json({ 
       message: 'Upload test successful', 
       files: fileInfo 
@@ -46,4 +44,4 @@ router.post('/test-upload', (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

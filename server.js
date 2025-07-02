@@ -1,11 +1,11 @@
-require('dotenv').config();
-const express = require('express');
-// Import user routes
-const userRoutes = require('./routers/user');
-const categoryRoutes = require('./routers/category');
-const productRoutes = require('./routers/product');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import userRoutes from './routers/user.js';
+import categoryRoutes from './routers/category.js';
+import productRoutes from './routers/product.js';
+import { getAllProductsAndUpdateAllOfThem } from './controllers/product.js';
 const app = express();
-
 // CORS middleware
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -26,7 +26,7 @@ app.use('/api',productRoutes );
 // Test database connection endpoint
 app.get('/test-db', async (req, res) => {
   try {
-    const { PrismaClient } = require('@prisma/client');
+    const { PrismaClient } = await import('@prisma/client');
     const prisma = new PrismaClient();
     await prisma.$connect();
     await prisma.$disconnect();
@@ -40,6 +40,7 @@ app.get('/test-db', async (req, res) => {
 app.get('/', (req, res) => {
   res.send('Welcome to the User Management API');
 });
+// getAllProductsAndUpdateAllOfThem(); // Only call this via API endpoint
 // connect to port
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

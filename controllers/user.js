@@ -1,7 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
-const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
 
 // Create a new user
 const loginUser = async (req, res) => {
@@ -60,8 +60,5 @@ const registerUser = async (req, res) => {
 
 
 
-module.exports = {
-  loginUser,
-  registerUser,
-};
+export { loginUser, registerUser };
 

@@ -1,4 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
+
+import { PrismaClient } from '@prisma/client';
+import { translate } from '@vitalets/google-translate-api';
+import { HttpProxyAgent } from 'http-proxy-agent';
 const prisma = new PrismaClient();
 
 const getProductById = async (req, res) => {
@@ -220,11 +223,103 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = {
+const getAllProductsAndUpdateAllOfThem = async (req, res) => {
+  const products = await prisma.product.findMany();
+  const results = [];
+  // Only process products 81 to 109 (1-based index)
+  // Proxy list (add more proxies for better reliability)
+  const proxies = [
+    'http://103.152.112.162:80',
+    'http://103.180.113.193:8080',
+    'http://103.172.70.50:3127',
+    'http://103.155.54.26:83',
+    'http://103.156.17.94:8080',
+    'http://103.169.255.38:8080',
+    'http://103.174.81.9:8080',
+    'http://103.178.43.170:8181',
+    'http://103.179.109.38:8080',
+    'http://103.180.113.193:8080',
+    'http://103.172.70.50:3127',
+    'http://103.155.54.26:83',
+    'http://103.156.17.94:8080',
+    'http://103.169.255.38:8080',
+    'http://103.174.81.9:8080',
+    'http://103.178.43.170:8181',
+    'http://103.179.109.38:8080',
+    // Add more proxies here if needed
+  ];
+  let proxyIndex = 0;
+  for (let i = 80; i < 109 && i < products.length; i++) {
+    const product = products[i];
+    let arName = null;
+    let arDescription = null;
+    let success = false;
+    let lastError = null;
+    let triedProxies = new Set();
+    for (let attempt = 0; attempt < proxies.length; attempt++) {
+      if (triedProxies.size === proxies.length) break; // All proxies tried
+      const agent = new HttpProxyAgent(proxies[proxyIndex]);
+      triedProxies.add(proxyIndex);
+      try {
+        arName = (await translate(product.name, { to: 'ar', fetchOptions: { agent } })).text;
+        arDescription = (await translate(product.description, { to: 'ar', fetchOptions: { agent } })).text;
+        success = true;
+        break;
+      } catch (error) {
+        lastError = error;
+        // On any error, rotate to next proxy
+        proxyIndex = (proxyIndex + 1) % proxies.length;
+        continue;
+      }
+    }
+    if (success) {
+      try {
+        await prisma.product.update({
+          where: { id: product.id },
+          data: {
+            ar_name: arName,
+            ar_description: arDescription,
+          },
+        });
+        results.push({
+          name: product.name,
+          ar_name: arName,
+          ar_description: arDescription,
+          status: 'updated'
+        });
+        console.log(`✅ Updated ${product.name}`);
+        console.log(`Arabic Name: ${arName}`);
+        console.log(`Arabic Description: ${arDescription}`);
+      } catch (error) {
+        results.push({
+          name: product.name,
+          error: error.message,
+          status: 'failed-db'
+        });
+        console.error(`❌ Failed to update DB for ${product.name}`, error);
+      }
+    } else {
+      results.push({
+        name: product.name,
+        error: lastError ? lastError.message : 'Unknown error',
+        status: 'failed-translate'
+      });
+      console.error(`❌ Failed to translate ${product.name}`, lastError);
+    }
+  }
+  res.status(200).json({
+    message: 'Products 81 to 109 processed',
+    results
+  });
+};
+
+
+export {
   getProductById,
   getAllProducts,
   createProduct,
   updateProduct,
   deleteProduct,
+  getAllProductsAndUpdateAllOfThem,
 };
 

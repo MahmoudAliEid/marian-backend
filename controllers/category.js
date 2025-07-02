@@ -27,14 +27,16 @@ const getAllCategories=async(req,res)=>{
 const updateCategory=async(req,res)=>{
     const {id}=req.params;
 
-    const {name,description}=req.body;
-    if(!name || !description){
+    const {name,description,ar_name, ar_description}=req.body;
+    if(!name || !description || !ar_name || !ar_description){
         return res.status(400).json({error:"Name and description are required"});
     }
     try {
         const updatedCategory=await prisma.category.update({
             where:{id},
-            data:{name,description}
+            data:{name,description,
+                ar_description,ar_name
+            }
         });
         res.status(200).json(updatedCategory);
     } catch (error) {
@@ -44,13 +46,15 @@ const updateCategory=async(req,res)=>{
 }
 
 const createCategory=async(req,res)=>{
-    const {name,description}=req.body;
+    const {name,description,ar_name, ar_description}=req.body;
     if(!name ){
         return res.status(400).json({error:"Name and description are required"});
     }
     try {
         const newCategory=await prisma.category.create({
-            data:{name, description: description || ""}
+            data:{name, description: description || "",
+                ar_name, ar_description
+            }
         });
         res.status(201).json(newCategory);
     } catch (error) {

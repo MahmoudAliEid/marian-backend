@@ -60,7 +60,7 @@ const getAllProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   console.log("=== CREATE PRODUCT ENDPOINT HIT ===");
-  const { name, description, userId, categoryId } = req.body;
+  const { name, description, userId, categoryId ,ar_description, ar_name} = req.body;
   console.log("Request body:", req.body);
   console.log("Files uploaded:", req.files);
 
@@ -121,6 +121,8 @@ const createProduct = async (req, res) => {
         description, 
         images: imageUrls,
         userId: validatedUserId,
+        ar_description,
+        ar_name,
         categoryId: validatedCategoryId
       },
       include: { 
@@ -157,7 +159,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, description, userId, categoryId } = req.body;
+  const { name, description, userId, categoryId ,ar_name, ar_description} = req.body;
   const files = req.files;
  
   if (!name || !description) {
@@ -169,7 +171,9 @@ const updateProduct = async (req, res) => {
       name,
       description,
       userId: userId || null,
-      categoryId: categoryId || null
+      categoryId: categoryId || null,
+      ar_name, 
+      ar_description
     };
 
     // If new images are uploaded, add them to the update data

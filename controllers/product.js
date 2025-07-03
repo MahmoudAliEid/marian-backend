@@ -14,13 +14,19 @@ const getProductById = async (req, res) => {
           select: {
             id: true,
             name: true,
-            email: true
+            email: true,
+            ar_description: true,
+            ar_name: true,
+            description: true,
           }
         },
         category: {
           select: {
             id: true,
-            name: true
+            name: true,
+            ar_description: true,
+            ar_name: true,
+            description: true
           }
         }
       },
@@ -43,13 +49,19 @@ const getAllProducts = async (req, res) => {
           select: {
             id: true,
             name: true,
-            email: true
+            email: true,
+            ar_description: true,
+            ar_name: true,
+            description: true
           }
         },
         category: {
           select: {
             id: true,
-            name: true
+            name: true,
+            ar_description: true,
+            ar_name: true,
+            description: true
           }
         }
       },

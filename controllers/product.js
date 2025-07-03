@@ -9,27 +9,8 @@ const getProductById = async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
       where: { id },
-      include: { 
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            ar_description: true,
-            ar_name: true,
-            description: true,
-          }
-        },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            ar_description: true,
-            ar_name: true,
-            description: true
-          }
-        }
-      },
+      
+     
     });
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
@@ -44,27 +25,7 @@ const getProductById = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
     const products = await prisma.product.findMany({
-      include: { 
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            ar_description: true,
-            ar_name: true,
-            description: true
-          }
-        },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            ar_description: true,
-            ar_name: true,
-            description: true
-          }
-        }
-      },
+      
     });
     res.status(200).json(products);
   } catch (error) {

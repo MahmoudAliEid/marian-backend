@@ -12,6 +12,7 @@ const loginUser = async (req, res) => {
   )
 
   try {
+    console.log('Attempting to connect to database...');
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -26,7 +27,12 @@ const loginUser = async (req, res) => {
       token
     } });
   } catch (error) {
-    console.log(error,'error logging in user');
+    console.error('Database connection error:', error);
+    if (error.message.includes('authentication failed')) {
+      return res.status(500).json({ 
+        error: "Database authentication failed. Please check your MongoDB credentials and database access permissions." 
+      });
+    }
     res.status(500).json({ error: "Error logging in user" });
   }
 };

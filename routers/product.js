@@ -1,6 +1,7 @@
 import express from 'express';
 import upload from '../lib/upload.js';
-import { getProductById, getAllProducts, getAllProductsAndUpdateAllOfThem, createProduct, updateProduct, deleteProduct } from '../controllers/product.js';
+import { getProductById, getAllProducts, getAllProductsAndUpdateAllOfThem, createProduct, updateProduct, deleteProduct ,removeImageFromCloudinary
+} from '../controllers/product.js';
 
 const router = express.Router();
 
@@ -41,6 +42,23 @@ router.post('/test-upload', (req, res, next) => {
   } catch (error) {
     console.error('Test upload error:', error);
     res.status(500).json({ error: 'Test upload failed', details: error.message });
+  }
+});
+// Remove image from Cloudinary
+router.delete('/remove-image/:url', async (req, res) => {
+  const { url } = req.params;
+  try {
+   
+    const response =removeImageFromCloudinary(url);
+    if (!response) {
+      return res.status(404).json({ error: 'Image not found in Cloudinary' });
+    }
+    // Assuming removeImageFromCloudinary returns a success message or object
+    res.status(200).json({ message: 'Image removed successfully', response });
+
+  } catch (error) {
+    console.error('Error removing image from Cloudinary:', error);
+    return res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 });
 

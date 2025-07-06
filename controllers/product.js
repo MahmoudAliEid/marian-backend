@@ -3,6 +3,14 @@ import { PrismaClient } from '@prisma/client';
 import { translate } from '@vitalets/google-translate-api';
 import { HttpProxyAgent } from 'http-proxy-agent';
 const prisma = new PrismaClient();
+// remove image from cloudinary
+import cloudinary from 'cloudinary';
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const getProductById = async (req, res) => {
   const { id } = req.params;
@@ -287,6 +295,34 @@ const getAllProductsAndUpdateAllOfThem = async (req, res) => {
 };
 
 
+/**
+ * Removes an image from Cloudinary given its URL.
+ * @param {string} imageUrl - The full URL of the image to remove.
+ * @returns {Promise<void>}
+ */
+const removeImageFromCloudinary = async (imageUrl) => {
+  if (!imageUrl) {
+    console.error('No imageUrl provided to removeImageFromCloudinary');
+    return;
+  }
+  try {
+    // Extract publicId from the image URL
+    // Example: https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg
+    // publicId: image/upload/v1234567890/sample (without extension)
+    const matches = imageUrl.match(/\/upload\/(?:v\d+\/)?([^\.]+)/);
+    const publicId = matches ? matches[1] : null;
+    if (!publicId) {
+      throw new Error('Could not extract publicId from imageUrl');
+    }
+    await cloudinary.v2.uploader.destroy(publicId);
+    console.log(`Image ${imageUrl} (publicId: ${publicId}) removed successfully`);
+  } catch (error) {
+    console.error(`Error removing image ${imageUrl}:`, error.message);
+  }
+};
+
+
+
 export {
   getProductById,
   getAllProducts,
@@ -294,5 +330,6 @@ export {
   updateProduct,
   deleteProduct,
   getAllProductsAndUpdateAllOfThem,
+  removeImageFromCloudinary
 };
 

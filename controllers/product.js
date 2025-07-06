@@ -309,7 +309,8 @@ const removeImageFromCloudinary = async (imageUrl) => {
     // Extract publicId from the image URL
     // Example: https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg
     // publicId: image/upload/v1234567890/sample (without extension)
-    const matches = imageUrl.match(/\/upload\/(?:v\d+\/)?([^\.]+)/);
+    // Extract publicId from the image URL, removing "marian/" if present
+    const matches = imageUrl.match(/\/upload\/(?:v\d+\/)?(?:marian\/)?([^\.]+)/);
     const publicId = matches ? matches[1] : null;
     if (!publicId) {
       throw new Error('Could not extract publicId from imageUrl');
